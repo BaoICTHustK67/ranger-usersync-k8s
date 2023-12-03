@@ -84,6 +84,12 @@ spec:
               value: "{{ .Values.ranger_usersync_conf.ranger_usersync_sync_group_search_base }}"
             - name: ranger_usersync_sync_source
               value: "{{ .Values.ranger_usersync_conf.ranger_usersync_sync_source }}"
+          livenessProbe:
+            tcpSocket :
+              port: 5151
+          readinessProbe:
+            tcpSocket :
+              port: 5151
           volumeMounts:
             - name: config-volume
               mountPath: /opt/apache-ranger/install.properties.tmpl
