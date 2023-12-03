@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm-chart.fullname" . }}
+  labels:
+    {{- include "helm-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "helm-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "helm-chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helm-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: usersync
+              containerPort: 5151
+              protocol: TCP
+          env:
+            - name: JAVA_HOME
+              value: "{{ .Values.ranger_usersync_conf.java_home }}"
+            - name: ADMIN_PASSWORD
+              value: "{{ .Values.ranger_usersync_conf.ADMIN_PASSWORD }}"
+            - name: ldap_host
+              value: "{{ .Values.ranger_usersync_conf.ldap_host }}"
+            - name: ldap_port
+              value: "{{ .Values.ranger_usersync_conf.ldap_port }}"
+            - name: rangerUsersync_password
+              value: "{{ .Values.ranger_usersync_conf.rangerUsersync_password }}"
+            - name: ranger_admin_host
+              value: "{{ .Values.ranger_usersync_conf.ranger_admin_host }}"
+            - name: ranger_ui_port
+              value: "{{ .Values.ranger_usersync_conf.ranger_ui_port }}"
+            - name: ranger_usersync_group_based_role_assignment_rules
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_based_role_assignment_rules }}"
+            - name: ranger_usersync_group_memberattributename
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_memberattributename }}"
+            - name: ranger_usersync_group_nameattribute
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_nameattribute }}"
+            - name: ranger_usersync_group_objectclass
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_objectclass }}"
+            - name: ranger_usersync_group_searchfilter
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_searchfilter }}"
+            - name: ranger_usersync_group_searchscope
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_group_searchscope }}"
+            - name: ranger_usersync_ldap_binddn
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_binddn }}"
+            - name: ranger_usersync_ldap_deltasync
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_deltasync }}"
+            - name: ranger_usersync_ldap_referral
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_referral }}"
+            - name: ranger_usersync_ldap_searchBase
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_searchBase }}"
+            - name: ranger_usersync_ldap_user_groupnameattribute
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_user_objectclass }}"
+            - name: ranger_usersync_ldap_user_searchbase
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_user_searchbase }}"
+            - name: ranger_usersync_ldap_user_searchfilter
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_user_searchfilter }}"
+            - name: ranger_usersync_ldap_user_searchscope
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_ldap_user_searchscope }}"
+            - name: ranger_usersync_sync_group_search_base
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_sync_group_search_base }}"
+            - name: ranger_usersync_sync_source
+              value: "{{ .Values.ranger_usersync_conf.ranger_usersync_sync_source }}"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/apache-ranger/install.properties.tmpl
+              subPath: install_properties
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "helm-chart.fullname" . }}
