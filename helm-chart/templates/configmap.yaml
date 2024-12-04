@@ -7,7 +7,7 @@ metadata:
     helm.sh/chart: {{ include "helm-chart.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  install_properties: |
+  install.properties: |
     ranger_base_dir = /etc/ranger
     POLICY_MGR_URL = http://{{ .Values.ranger_usersync_conf.ranger_admin_host }}:{{ .Values.ranger_usersync_conf.ranger_ui_port }}
     SYNC_SOURCE = {{ .Values.ranger_usersync_conf.ranger_usersync_sync_source }}
