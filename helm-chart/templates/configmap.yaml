@@ -31,7 +31,7 @@ data:
     USERNAME_GROUPNAME_ASSIGNMENT_LIST_DELIMITER = ,
     GROUP_BASED_ROLE_ASSIGNMENT_RULES = {{ .Values.ranger_usersync_conf.ranger_usersync_group_based_role_assignment_rules }}
     SYNC_LDAP_URL = ldap://{{ .Values.ranger_usersync_conf.ldap_host }}:{{ .Values.ranger_usersync_conf.ldap_port }}
-    SYNC_LDAP_BIND_DN =CN={{ .Values.ranger_usersync_conf.ADMIN_USERNAME }},{{ .Values.ranger_usersync_conf.ranger_usersync_sync_group_search_base }}
+    SYNC_LDAP_BIND_DN =cn={{ .Values.ranger_usersync_conf.ADMIN_USERNAME }},{{ .Values.ranger_usersync_conf.ranger_usersync_sync_group_search_base }}
     SYNC_LDAP_BIND_PASSWORD ={{ .Values.ranger_usersync_conf.ADMIN_PASSWORD }}
     SYNC_LDAP_DELTASYNC = {{ .Values.ranger_usersync_conf.ranger_usersync_ldap_deltasync }}
     SYNC_LDAP_SEARCH_BASE ={{ .Values.ranger_usersync_conf.ranger_usersync_ldap_searchBase }}
