@@ -92,8 +92,8 @@ spec:
               port: 5151
           volumeMounts:
             - name: config-volume
-              mountPath: /opt/apache-ranger/install.properties.tmpl
-              subPath: install_properties
+              mountPath: /opt/ranger/ranger-2.5.0-usersync/install.properties
+              subPath: install.properties
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
