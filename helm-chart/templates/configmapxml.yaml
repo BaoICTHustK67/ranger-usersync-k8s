@@ -10,6 +10,10 @@ data:
   ranger-ugsync-site.xml: |
     <configuration>
             <property>
+                    <name>ranger_base_dir</name>
+                    <value>/etc/ranger/</value>
+            </property>
+            <property>
                     <name>ranger.usersync.credstore.filename</name>
                     <value>/etc/ranger/usersync/conf/rangerusersync.jceks</value>
             </property>
@@ -55,7 +59,7 @@ data:
             </property>
             <property>
                     <name>ranger.usersync.ldap.ldapbindpassword</name>
-                    <value>_</value>
+                    <value>Not@SecurePassw0rd</value>
             </property>
             <property>
                     <name>ranger.usersync.ldap.searchBase</name>
