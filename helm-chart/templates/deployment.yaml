@@ -104,6 +104,8 @@ spec:
             - name: writable-config
               mountPath: /opt/ranger/ranger-2.5.0-usersync/install.properties
               subPath: install.properties
+            - name: xml-config
+              mountPath: /opt/ranger/ranger-2.5.0-usersync/conf
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -119,6 +121,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        - name: xml-config
+          configMap:
+            name: xml-configmap
         - name: config-volume
           configMap:
             name: {{ include "helm-chart.fullname" . }}
