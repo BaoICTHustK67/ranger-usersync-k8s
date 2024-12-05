@@ -27,15 +27,6 @@ spec:
       serviceAccountName: {{ include "helm-chart.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      initContainers:
-        - name: copy-config
-          image: busybox
-          command: ['sh', '-c', 'cp /config/install.properties /etc/ranger/usersync/install.properties']
-          volumeMounts:
-            - name: config-volume
-              mountPath: /config
-            - name: writable-config
-              mountPath: /etc/ranger/usersync/
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -101,7 +92,7 @@ spec:
             tcpSocket :
               port: 5151
           volumeMounts:
-            - name: writable-config
+            - name: config-volume
               mountPath: /opt/ranger/ranger-2.5.0-usersync/install.properties
               subPath: install.properties
           resources:
@@ -122,5 +113,3 @@ spec:
         - name: config-volume
           configMap:
             name: {{ include "helm-chart.fullname" . }}
-        - name: writable-config
-          emptyDir: {}
